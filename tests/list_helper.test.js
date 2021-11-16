@@ -1,4 +1,9 @@
-const { dummy, totalLikes, favouriteBlog } = require('../utils/list_helper');
+const {
+  dummy,
+  totalLikes,
+  favouriteBlog,
+  mostBlogs,
+} = require('../utils/list_helper');
 
 const blogs = [
   {
@@ -83,5 +88,22 @@ describe('favourite blog', () => {
 
   test('when list has more than a blog', () => {
     expect(favouriteBlog(blogs)).toEqual(blogs[2]);
+  });
+});
+
+describe('author with the most blogs', () => {
+  test('of empty list is {}', () => {
+    expect(mostBlogs([])).toEqual({});
+  });
+
+  test('when list has only one blog', () => {
+    expect(mostBlogs([blogs[0]])).toEqual({
+      author: blogs[0].author,
+      blogs: 1,
+    });
+  });
+
+  test('when list has more than a blog', () => {
+    expect(mostBlogs(blogs)).toEqual({ author: 'Robert C. Martin', blogs: 3 });
   });
 });

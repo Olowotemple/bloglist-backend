@@ -15,4 +15,25 @@ const favouriteBlog = (blogs) => {
   }, {});
 };
 
-module.exports = { dummy, totalLikes, favouriteBlog };
+const mostBlogs = (blogs) => {
+  let max = 0;
+  return blogs
+    .reduce((acc, curr) => {
+      const blog = acc.find((blog) => blog.author === curr.author);
+      if (blog) {
+        blog.blogs++;
+      } else {
+        acc.push({ author: curr.author, blogs: 1 });
+      }
+      return acc;
+    }, [])
+    .reduce((acc, curr) => {
+      if (curr.blogs > max) {
+        max = curr.blogs;
+        acc = curr;
+      }
+      return acc;
+    }, {});
+};
+
+module.exports = { dummy, totalLikes, favouriteBlog, mostBlogs };
