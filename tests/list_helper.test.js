@@ -3,6 +3,7 @@ const {
   totalLikes,
   favouriteBlog,
   mostBlogs,
+  mostLikes,
 } = require('../utils/list_helper');
 
 const blogs = [
@@ -104,6 +105,29 @@ describe('author with the most blogs', () => {
   });
 
   test('when list has more than a blog', () => {
-    expect(mostBlogs(blogs)).toEqual({ author: 'Robert C. Martin', blogs: 3 });
+    expect(mostBlogs(blogs)).toEqual({
+      author: 'Robert C. Martin',
+      blogs: 3,
+    });
+  });
+});
+
+describe('author with the most likes', () => {
+  test('of empty list is {}', () => {
+    expect(mostLikes([])).toEqual({});
+  });
+
+  test('when list has only one blog', () => {
+    expect(mostLikes([blogs[0]])).toEqual({
+      author: blogs[0].author,
+      likes: blogs[0].likes,
+    });
+  });
+
+  test('when list has more than a blog', () => {
+    expect(mostLikes(blogs)).toEqual({
+      author: 'Edsger W. Dijkstra',
+      likes: 17,
+    });
   });
 });

@@ -36,4 +36,31 @@ const mostBlogs = (blogs) => {
     }, {});
 };
 
-module.exports = { dummy, totalLikes, favouriteBlog, mostBlogs };
+const mostLikes = (blogs) => {
+  let max = 0;
+  return blogs
+    .reduce((acc, curr) => {
+      const blog = acc.find((blog) => blog.author === curr.author);
+      if (blog) {
+        blog.likes += curr.likes;
+      } else {
+        acc.push({ author: curr.author, likes: curr.likes });
+      }
+      return acc;
+    }, [])
+    .reduce((acc, curr) => {
+      if (curr.likes > max) {
+        max = curr.likes;
+        acc = curr;
+      }
+      return acc;
+    }, {});
+};
+
+module.exports = {
+  dummy,
+  totalLikes,
+  favouriteBlog,
+  mostBlogs,
+  mostLikes,
+};
