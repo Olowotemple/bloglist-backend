@@ -1,0 +1,12 @@
+GET http://localhost:3003/api/blogs
+
+###
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+
+{
+  "title": "Metaverse, the future?",
+  "author": "Satoshi Nakomoto",
+  "url": "http://fake-url2035.com",
+  "likes": 106
+}
