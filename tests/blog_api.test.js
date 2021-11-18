@@ -36,9 +36,15 @@ describe('GET blogs', () => {
 
   test('blogs are returned in JSON format', async () => {
     await api
-      .get('/api/blogs')
+      .get(baseURL)
       .expect(200)
       .expect('Content-Type', /application\/json/);
+  });
+
+  test('unique identifier is named id', async () => {
+    const res = await api.get(baseURL);
+    const blog = res.body[0];
+    expect(blog.id).toBeDefined();
   });
 });
 
