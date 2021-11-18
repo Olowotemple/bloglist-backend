@@ -80,6 +80,26 @@ describe('POST blogs', () => {
     expect(res.body.likes).toBeDefined();
     expect(res.body.likes).toEqual(0);
   });
+
+  test('No title results in 400 Bad request', async () => {
+    const blog = {
+      author: 'Catalin Pit',
+      url: 'http://fake-url3a7a1.com',
+    };
+
+    const res = await api.post(baseURL).send(blog);
+    expect(res.status).toEqual(400);
+  });
+
+  test('No url results in 400 Bad request', async () => {
+    const blog = {
+      title: 'Your Introduction to web 3.0',
+      author: 'Catalin Pit',
+    };
+
+    const res = await api.post(baseURL).send(blog);
+    expect(res.status).toEqual(400);
+  });
 });
 
 afterAll(() => {
