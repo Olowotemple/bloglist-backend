@@ -20,8 +20,9 @@ const initialBlogs = [
   },
 ];
 
+jest.setTimeout(20000);
+
 beforeEach(async () => {
-  jest.setTimeout(20000);
   await Blog.deleteMany({});
   const promiseArr = initialBlogs.map((blog) => new Blog(blog).save());
   await Promise.all(promiseArr);
@@ -66,6 +67,18 @@ describe('POST blogs', () => {
     const blogTitles = blogs.map((blog) => blog.title);
     expect(blogs).toHaveLength(initialBlogs.length + 1);
     expect(blogTitles).toContain('Your Introduction to web 3.0');
+  });
+
+  test('likes defaults to 0', async () => {
+    const blog = {
+      title: 'Your Introduction to web 3.0',
+      author: 'Catalin Pit',
+      url: 'http://fake-url3a7a1.com',
+    };
+
+    const res = await api.post(baseURL).send(blog);
+    expect(res.body.likes).toBeDefined();
+    expect(res.body.likes).toEqual(0);
   });
 });
 
