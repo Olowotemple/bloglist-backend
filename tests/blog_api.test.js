@@ -13,7 +13,7 @@ const initialBlogs = [
     likes: 23,
   },
   {
-    title: 'Metavers, the future?',
+    title: 'Metaverse, the future?',
     author: 'Satoshi Nakomoto',
     url: 'http://fake-url2035.com',
     likes: 106,
@@ -116,6 +116,28 @@ describe('DELETE blogs', () => {
 
     const titles = blogsAtEnd.map((blog) => blog.titles);
     expect(titles).not.toContain(blogToDelete.title);
+  });
+});
+
+describe('PUT blogs', () => {
+  test('a single blog post can be updated', async () => {
+    const res = await api.get('/api/blogs');
+    const blogs = res.body;
+    const blogToUpdate = blogs[0];
+
+    const updateRes = await api.put(`/api/blogs/${blogToUpdate.id}`).send({
+      title: 'Feathering Storms',
+      author: 'Charone Chaperone',
+      url: 'http://fakeasf-url#2.com',
+      likes: 7,
+    });
+    expect(updateRes.status).toEqual(200);
+
+    const getAllRes = await api.get('/api/blogs');
+    const blogsAtEnd = getAllRes.body;
+    const blogTitles = blogsAtEnd.map((blog) => blog.title);
+    expect(blogTitles).not.toContain(blogToUpdate.title);
+    expect(blogTitles).toContain(updateRes.body.title);
   });
 });
 
