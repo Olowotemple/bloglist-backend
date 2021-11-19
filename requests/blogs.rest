@@ -1,12 +1,12 @@
-GET http://localhost:3003/api/blogs
+GET http://localhost:3001/api/blogs
 
 ###
-POST http://localhost:3003/api/blogs
+POST http://localhost:3001/api/blogs
 Content-Type: application/json
 
 {
-  "title": "Metaverse, the future?",
-  "author": "Satoshi Nakomoto",
+  "title": "Introduction to Next.js 2022",
+  "author": "Catalin Pit",
   "url": "http://fake-url2035.com",
   "likes": 106
 }

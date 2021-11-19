@@ -102,6 +102,23 @@ describe('POST blogs', () => {
   });
 });
 
+describe('DELETE blogs', () => {
+  test('a single blog post can be deleted', async () => {
+    const res = await api.get('/api/blogs');
+    const blogs = res.body;
+    const blogToDelete = blogs[0];
+    const deleteRes = await api.delete(`/api/blogs/${blogToDelete.id}`);
+    expect(deleteRes.status).toEqual(204);
+
+    const getAllRes = await api.get('/api/blogs');
+    const blogsAtEnd = getAllRes.body;
+    expect(blogsAtEnd).toHaveLength(blogs.length - 1);
+
+    const titles = blogsAtEnd.map((blog) => blog.titles);
+    expect(titles).not.toContain(blogToDelete.title);
+  });
+});
+
 afterAll(() => {
   mongoose.connection.close();
 });

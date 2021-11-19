@@ -1,13 +1,13 @@
-const blogsRouter = require('express').Router();
+const blogRouter = require('express').Router();
 const Blog = require('../models/blog');
 
-blogsRouter.get('/', (request, response) => {
+blogRouter.get('/', (request, response) => {
   Blog.find({}).then((blogs) => {
     response.json(blogs);
   });
 });
 
-blogsRouter.post('/', (request, response) => {
+blogRouter.post('/', (request, response) => {
   const { title, author, url, likes } = request.body;
 
   if (!title || !url) {
@@ -26,4 +26,10 @@ blogsRouter.post('/', (request, response) => {
   });
 });
 
-module.exports = blogsRouter;
+blogRouter.delete('/:id', async (request, response) => {
+  const { id } = request.params;
+  await Blog.findByIdAndDelete(id);
+  response.status(204).end();
+});
+
+module.exports = blogRouter;
