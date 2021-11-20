@@ -8,5 +8,5 @@ const MONGODB_URI =
 module.exports = {
   MONGODB_URI,
   PORT,
-  SALT_ROUNDS,
+  SALT_ROUNDS: +SALT_ROUNDS,
 };
