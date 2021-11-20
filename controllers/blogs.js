@@ -16,18 +16,11 @@ blogRouter.post('/', async (request, response) => {
     return response.status(400).end();
   }
 
-  const token = (() => {
-    const authorization = request.get('Authorization');
-    if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
-      return authorization.substring(7);
-    }
-    return null;
-  })(request);
-  if (!token) {
+  if (!request.token) {
     return response.status(401).json({ error: 'token missing' });
   }
 
-  const decodedToken = jwt.verify(token, SECRET);
+  const decodedToken = jwt.verify(request.token, SECRET);
 
   if (!decodedToken.id) {
     return response.status(401).json({ error: 'invalid token' });
