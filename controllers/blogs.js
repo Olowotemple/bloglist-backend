@@ -1,8 +1,9 @@
 const blogRouter = require('express').Router();
 const Blog = require('../models/blog');
+const User = require('../models/user');
 
 blogRouter.get('/', async (request, response) => {
-  const blogs = await Blog.find({});
+  const blogs = await Blog.find({}).populate('user');
   response.json(blogs);
 });
 
@@ -13,11 +14,14 @@ blogRouter.post('/', async (request, response) => {
     return response.status(400).end();
   }
 
+  const user = (await User.findOne({})).toJSON();
+
   const blog = new Blog({
     title,
     author,
     url,
     likes: likes || 0,
+    user: user.id,
   });
 
   const savedBlog = await blog.save();
