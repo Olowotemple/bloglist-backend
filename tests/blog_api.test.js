@@ -35,7 +35,7 @@ describe('GET blogs', () => {
   });
 });
 
-describe.only('POST blogs', () => {
+describe('POST blogs', () => {
   const baseURL = '/api/blogs';
 
   test('a new blog post can be created', async () => {
@@ -50,11 +50,11 @@ describe.only('POST blogs', () => {
       .post(baseURL)
       .set(
         'Authorization',
-        'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik9sb3dvdGVtcGxlIiwiaWQiOiI2MTk4ZTg2MWQwYzk1YjEwYmRhMDExNjUiLCJpYXQiOjE2Mzc0NDc3OTN9.sKcW6CwH-MCtjCY8-KHzBYv9ploatC9BVfBar10OtPA'
+        'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik9sb3dvdGVtcGxlIiwiaWQiOiI2MTlhNzY5NGU2ZDY1M2E5ZjBhNTY5ZmYiLCJpYXQiOjE2Mzc1MTgyNDF9.Vm_o56-0IPgsD-Xab2Vp6JPbkTL1sXwoC2vVP1EAXvE'
       )
       .send(blog);
-    const res = await api.get(baseURL);
-    const blogs = res.body;
+
+    const blogs = await blogsInDb();
     const blogTitles = blogs.map((blog) => blog.title);
     expect(blogs).toHaveLength(initialBlogs.length + 1);
     expect(blogTitles).toContain('Your Introduction to web 3.0');
@@ -71,7 +71,7 @@ describe.only('POST blogs', () => {
       .post(baseURL)
       .set(
         'Authorization',
-        'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik9sb3dvdGVtcGxlIiwiaWQiOiI2MTk4ZTg2MWQwYzk1YjEwYmRhMDExNjUiLCJpYXQiOjE2Mzc0NDc3OTN9.sKcW6CwH-MCtjCY8-KHzBYv9ploatC9BVfBar10OtPA'
+        'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik9sb3dvdGVtcGxlIiwiaWQiOiI2MTlhNzY5NGU2ZDY1M2E5ZjBhNTY5ZmYiLCJpYXQiOjE2Mzc1MTgyNDF9.Vm_o56-0IPgsD-Xab2Vp6JPbkTL1sXwoC2vVP1EAXvE'
       )
       .send(blog);
     expect(res.body.likes).toBeDefined();
@@ -88,7 +88,7 @@ describe.only('POST blogs', () => {
       .post(baseURL)
       .set(
         'Authorization',
-        'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik9sb3dvdGVtcGxlIiwiaWQiOiI2MTk4ZTg2MWQwYzk1YjEwYmRhMDExNjUiLCJpYXQiOjE2Mzc0NDc3OTN9.sKcW6CwH-MCtjCY8-KHzBYv9ploatC9BVfBar10OtPA'
+        'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik9sb3dvdGVtcGxlIiwiaWQiOiI2MTlhNzY5NGU2ZDY1M2E5ZjBhNTY5ZmYiLCJpYXQiOjE2Mzc1MTgyNDF9.Vm_o56-0IPgsD-Xab2Vp6JPbkTL1sXwoC2vVP1EAXvE'
       )
       .send(blog);
     expect(res.status).toEqual(400);
@@ -104,7 +104,7 @@ describe.only('POST blogs', () => {
       .post(baseURL)
       .set(
         'Authorization',
-        'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik9sb3dvdGVtcGxlIiwiaWQiOiI2MTk4ZTg2MWQwYzk1YjEwYmRhMDExNjUiLCJpYXQiOjE2Mzc0NDc3OTN9.sKcW6CwH-MCtjCY8-KHzBYv9ploatC9BVfBar10OtPA'
+        'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik9sb3dvdGVtcGxlIiwiaWQiOiI2MTlhNzY5NGU2ZDY1M2E5ZjBhNTY5ZmYiLCJpYXQiOjE2Mzc1MTgyNDF9.Vm_o56-0IPgsD-Xab2Vp6JPbkTL1sXwoC2vVP1EAXvE'
       )
       .send(blog);
     expect(res.status).toEqual(400);
@@ -123,18 +123,20 @@ describe.only('POST blogs', () => {
 
 describe('DELETE blogs', () => {
   test('a single blog post can be deleted', async () => {
-    const res = await api.get('/api/blogs');
-    const blogs = res.body;
-    const blogToDelete = blogs[0];
-    const deleteRes = await api.delete(`/api/blogs/${blogToDelete.id}`);
+    const blogToDelete = (await api.get('/api/blogs')).body[0];
+    const deleteRes = await api
+      .delete(`/api/blogs/${blogToDelete.id}`)
+      .set(
+        'Authorization',
+        'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik9sb3dvdGVtcGxlIiwiaWQiOiI2MTk4ZTg2MWQwYzk1YjEwYmRhMDExNjUiLCJpYXQiOjE2Mzc0NDc3OTN9.sKcW6CwH-MCtjCY8-KHzBYv9ploatC9BVfBar10OtPA'
+      );
     expect(deleteRes.status).toEqual(204);
 
-    const getAllRes = await api.get('/api/blogs');
-    const blogsAtEnd = getAllRes.body;
-    expect(blogsAtEnd).toHaveLength(blogs.length - 1);
+    const blogs = await blogsInDb();
+    expect(blogs).toHaveLength(initialBlogs.length - 1);
 
-    const titles = blogsAtEnd.map((blog) => blog.titles);
-    expect(titles).not.toContain(blogToDelete.title);
+    const blogTitles = blogs.map((blog) => blog.title);
+    expect(blogTitles).not.toContain(blogToDelete.title);
   });
 });
 
@@ -161,6 +163,5 @@ describe('PUT blogs', () => {
 });
 
 afterAll(async () => {
-  console.log(mongoose.connections.length);
   await mongoose.connection.close();
 });
