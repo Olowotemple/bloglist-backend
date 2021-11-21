@@ -1,7 +1,11 @@
 const supertest = require('supertest');
 const mongoose = require('mongoose');
 const app = require('../app');
-const { initDB, initialUsers, usersInDb } = require('../utils/user_helper');
+const {
+  initDB,
+  initialUsers,
+  usersInDb,
+} = require('../utils/tests/user_helper');
 
 const api = supertest(app);
 

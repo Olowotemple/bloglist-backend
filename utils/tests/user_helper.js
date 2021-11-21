@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs');
-const User = require('../models/user');
-const { SALT_ROUNDS } = require('../utils/config');
+const User = require('../../models/user');
+const { SALT_ROUNDS } = require('../config');
 
 const initialUsers = [
   {

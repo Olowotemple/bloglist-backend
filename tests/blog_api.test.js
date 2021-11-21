@@ -1,31 +1,16 @@
 const mongoose = require('mongoose');
 const supertest = require('supertest');
-const Blog = require('../models/blog');
 const app = require('../app');
+const {
+  initialBlogs,
+  initDB,
+  blogsInDb,
+} = require('../utils/tests/blog_helper');
 
 const api = supertest(app);
 
-const initialBlogs = [
-  {
-    title: 'How to make scrambled eggs',
-    author: 'Jeff Gordons',
-    url: 'http://fake-url.com',
-    likes: 23,
-  },
-  {
-    title: 'Metaverse, the future?',
-    author: 'Satoshi Nakomoto',
-    url: 'http://fake-url2035.com',
-    likes: 106,
-  },
-];
-
-jest.setTimeout(20000);
-
 beforeEach(async () => {
-  await Blog.deleteMany({});
-  const promiseArr = initialBlogs.map((blog) => new Blog(blog).save());
-  await Promise.all(promiseArr);
+  await initDB();
 });
 
 describe('GET blogs', () => {
@@ -50,7 +35,7 @@ describe('GET blogs', () => {
   });
 });
 
-describe('POST blogs', () => {
+describe.only('POST blogs', () => {
   const baseURL = '/api/blogs';
 
   test('a new blog post can be created', async () => {
@@ -61,7 +46,13 @@ describe('POST blogs', () => {
       likes: 292,
     };
 
-    await api.post(baseURL).send(blog);
+    await api
+      .post(baseURL)
+      .set(
+        'Authorization',
+        'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik9sb3dvdGVtcGxlIiwiaWQiOiI2MTk4ZTg2MWQwYzk1YjEwYmRhMDExNjUiLCJpYXQiOjE2Mzc0NDc3OTN9.sKcW6CwH-MCtjCY8-KHzBYv9ploatC9BVfBar10OtPA'
+      )
+      .send(blog);
     const res = await api.get(baseURL);
     const blogs = res.body;
     const blogTitles = blogs.map((blog) => blog.title);
@@ -76,7 +67,13 @@ describe('POST blogs', () => {
       url: 'http://fake-url3a7a1.com',
     };
 
-    const res = await api.post(baseURL).send(blog);
+    const res = await api
+      .post(baseURL)
+      .set(
+        'Authorization',
+        'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik9sb3dvdGVtcGxlIiwiaWQiOiI2MTk4ZTg2MWQwYzk1YjEwYmRhMDExNjUiLCJpYXQiOjE2Mzc0NDc3OTN9.sKcW6CwH-MCtjCY8-KHzBYv9ploatC9BVfBar10OtPA'
+      )
+      .send(blog);
     expect(res.body.likes).toBeDefined();
     expect(res.body.likes).toEqual(0);
   });
@@ -87,7 +84,13 @@ describe('POST blogs', () => {
       url: 'http://fake-url3a7a1.com',
     };
 
-    const res = await api.post(baseURL).send(blog);
+    const res = await api
+      .post(baseURL)
+      .set(
+        'Authorization',
+        'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik9sb3dvdGVtcGxlIiwiaWQiOiI2MTk4ZTg2MWQwYzk1YjEwYmRhMDExNjUiLCJpYXQiOjE2Mzc0NDc3OTN9.sKcW6CwH-MCtjCY8-KHzBYv9ploatC9BVfBar10OtPA'
+      )
+      .send(blog);
     expect(res.status).toEqual(400);
   });
 
@@ -97,8 +100,24 @@ describe('POST blogs', () => {
       author: 'Catalin Pit',
     };
 
-    const res = await api.post(baseURL).send(blog);
+    const res = await api
+      .post(baseURL)
+      .set(
+        'Authorization',
+        'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik9sb3dvdGVtcGxlIiwiaWQiOiI2MTk4ZTg2MWQwYzk1YjEwYmRhMDExNjUiLCJpYXQiOjE2Mzc0NDc3OTN9.sKcW6CwH-MCtjCY8-KHzBYv9ploatC9BVfBar10OtPA'
+      )
+      .send(blog);
     expect(res.status).toEqual(400);
+  });
+
+  test('adding a blog without a token fails', async () => {
+    const blog = {
+      title: 'Your Introduction to web 3.0',
+      author: 'Catalin Pit',
+    };
+
+    const res = await api.post(baseURL).send(blog);
+    expect(res.status).toEqual(401);
   });
 });
 
@@ -141,6 +160,7 @@ describe('PUT blogs', () => {
   });
 });
 
-afterAll(() => {
-  mongoose.connection.close();
+afterAll(async () => {
+  console.log(mongoose.connections.length);
+  await mongoose.connection.close();
 });

@@ -12,11 +12,12 @@ const tokenExtractor = async (req, res, next) => {
 };
 
 const userExtractor = async (req, res, next) => {
-  const token = req.token;
-
-  const decodedToken = jwt.verify(token, SECRET);
-
-  req.user = decodedToken || null;
+  try {
+    const user = jwt.verify(req.token, SECRET);
+    req.user = user || null;
+  } catch (err) {
+    res.status(401).json({ error: err.message });
+  }
   next();
 };
 
