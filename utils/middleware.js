@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const { SECRET } = require('./config');
 
-const tokenExtractor = async (req, res, next) => {
+const tokenExtractor = (req, res, next) => {
   const authorization = req.get('Authorization');
   if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
     req.token = authorization.substring(7);
@@ -11,13 +11,13 @@ const tokenExtractor = async (req, res, next) => {
   next();
 };
 
-const userExtractor = async (req, res, next) => {
-  try {
-    const user = jwt.verify(req.token, SECRET);
-    req.user = user || null;
-  } catch (err) {
-    res.status(401).json({ error: err.message });
+const userExtractor = (req, res, next) => {
+  if (!req.token) {
+    return res.status(401).json({ error: 'missing token' });
   }
+  const user = jwt.verify(req.token, SECRET);
+  req.user = user || null;
+
   next();
 };
 
